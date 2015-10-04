@@ -23,46 +23,47 @@ class AdvertType extends AbstractType
             ->add('title', 'text')
             ->add('author', 'text')
             ->add('content', 'textarea')
+            ->add('image', new ImageType())
             ->add('published', 'checkbox', array(
                 'label' => 'Pulier l\'article ',
                 'required' => FALSE,
             ))
-            //->add('updatedAt')
-            //->add('nbApplications')
-            //->add('slug')
-            ->add('image', new ImageType())
-            ->add('save', 'submit')    
-
             ->add('categories', 'entity', array(
                 'class'         => 'OCPlatformBundle:Category',
                 'property'    => 'name',
-                'multiple' => true
-            ))
-
+                'multiple' => true,
+                'expanded' => false
+            ))    
             ->add('save', 'submit')    
+            //->add('updatedAt')
+            //->add('nbApplications')
+            //->add('slug')
         ;
         
         // On ajoute une fonction qui va écouter un évènement
-        $builder->addEventListener(
-                FormEvents::PRE_SET_DATA, // 1er argument : L'évènement qui nous intéresse : ici, PRE_SET_DATA
-                function(FormEvent $event) { // 2e argument : La fonction à exécuter lorsque l'évènement est déclenché
-            // On récupère notre objet Advert sous-jacent
-            $advert = $event->getData();
+        $builder->addEventListener (
+            FormEvents::PRE_SET_DATA, // 1er argument : L'évènement qui nous intéresse : ici, PRE_SET_DATA
+            function(FormEvent $event) { // 2e argument : La fonction à exécuter lorsque l'évènement est déclenché
+                // On récupère notre objet Advert sous-jacent
+                $advert = $event->getData ();
 
-            // Cette condition est importante, on en reparle plus loin
-            if (null === $advert) {
-                return; // On sort de la fonction sans rien faire lorsque $advert vaut null
-            }
+                // Cette condition est importante, on en reparle plus loin
+                if (null === $advert)
+                {
+                    return; // On sort de la fonction sans rien faire lorsque $advert vaut null
+                }
 
-            if (!$advert->getPublished() || null === $advert->getId()) {
-                // Si l'annonce n'est pas publiée, ou si elle n'existe pas encore en base (id est null),
-                // alors on ajoute le champ published
-                $event->getForm()->add('published', 'checkbox', array('required' => false));
-            } else {
-                // Sinon, on le supprime
-                $event->getForm()->remove('published');
+                if ( ! $advert->getPublished () || null === $advert->getId ())
+                {
+                    // Si l'annonce n'est pas publiée, ou si elle n'existe pas encore en base (id est null),
+                    // alors on ajoute le champ published
+                    $event->getForm ()->add ('published', 'checkbox', array('required' => false));
+                } else
+                {
+                    // Sinon, on le supprime
+                    $event->getForm ()->remove ('published');
+                }
             }
-        }
         );
     }
     

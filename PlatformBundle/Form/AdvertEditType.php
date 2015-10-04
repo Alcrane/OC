@@ -17,7 +17,7 @@ class AdvertEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->remove('date', 'date')
+            ->remove('date')
             ;
     }
     
